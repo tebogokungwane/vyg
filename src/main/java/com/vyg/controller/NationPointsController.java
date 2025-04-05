@@ -22,7 +22,7 @@ public class NationPointsController {
     /**
      * Add Points to a Nation for an Event
      */
-    @PostMapping("/add")
+    @PostMapping("/addPoints")
     public ResponseEntity<NationPoints> addPoints(@RequestBody NationPointsRequest request) {
         return ResponseEntity.ok(nationPointsService.addPoints(request));
     }
@@ -31,9 +31,17 @@ public class NationPointsController {
     /**
      * Get Points Earned by a Nation
      */
-    @GetMapping("/{nation}")
-    public ResponseEntity<List<NationPoints>> getNationPoints(@PathVariable String nation) {
-        Nation nationEnum = Nation.valueOf(nation.toUpperCase());
-        return ResponseEntity.ok(nationPointsService.getNationPoints(nationEnum));
-    }
+//    @GetMapping("/{nation}")
+//    public ResponseEntity<List<NationPoints>> getNationPoints(@PathVariable String nation) {
+//        Nation nationEnum = Nation.valueOf(nation.toUpperCase());
+//        return ResponseEntity.ok(nationPointsService.getNationPoints(nationEnum));
+//    }
+
+//    @GetMapping("/by-church")
+//    public List<NationPoints> getPointsByChurch(@RequestParam String churchAddress){
+//        return nationPointsService.getPointsByChurchAddress(churchAddress);
+//    }
+
+
+
 }

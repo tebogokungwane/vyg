@@ -17,8 +17,17 @@ import lombok.*;
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        private String name; // ✅ Event name (e.g., "Sunday Service")
-        private int defaultPoints; // ✅ Default point value (Explosion points)
-        private boolean active = true; // ✅ Allows disabling an event instead of deleting it
+        private String name;
+        private int defaultPoints;
+
+//        @ManyToOne
+//        @JoinColumn(name = "event_id", nullable = true)
+//        private BaseEvent parentEvent;
+
+
+        public BaseEvent(String name, int defaultPoints) {
+            this.name = name;
+            this.defaultPoints = defaultPoints;
+        }
     }
 

@@ -31,6 +31,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<Members> registerMember(@RequestBody MemberRequest memberRequest) {
         try {
+            log.info("Request body :" + memberRequest);
             Members member = memberService.createMember(memberRequest);
             return ResponseEntity.ok(member);
         } catch (Exception e) {
@@ -41,6 +42,21 @@ public class MemberController {
 
         }
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<Members> login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String password = credentials.get("password");
+
+        Members member = memberService.login(email, password);
+        if (member != null) {
+            return ResponseEntity.ok(member);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
 
 
     @PostMapping("/addMentee")
@@ -89,6 +105,54 @@ public class MemberController {
     public ResponseEntity<List<Members>> getMentorsByProvinceAndRegion(@PathVariable Role role, @PathVariable String provinceName,  @PathVariable String regionName ) {
         return ResponseEntity.ok(memberService.getMentorsByProvinceAndRegion(role, provinceName, regionName));
     }
+
+
+    @GetMapping("/mentor/address/{addressId}")
+    public ResponseEntity<List<Members>> getMentorsByAddress(@PathVariable Long addressId){
+        List<Members> membersList = memberService.getMentorsByAddress(addressId);
+        return ResponseEntity.ok(membersList);
+    }
+
+
+    @GetMapping("/all-members/address/{addressId}")
+    public ResponseEntity<List<Members>> getAllMembersByAddress(@PathVariable Long addressId){
+        List<Members> membersList = memberService.getAllMembersByAddress(addressId);
+        return ResponseEntity.ok(membersList);
+    }
+
+
+    @GetMapping("/all-saved-members/address/{addressId}")
+    public ResponseEntity<Page<Members>> getAllSavedMembers(
+            @PathVariable Long addressId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "9000") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(memberService.getAllSavedMembersByAddress(addressId, pageable));
+    }
+
+
+
+
+
+//    @GetMapping("/all-members/address/{addressId}")
+//    public ResponseEntity<List<Members>> getAllMembers(@PathVariable Long addressId) {
+//        List<Members> mentors = memberService.getAllMembersByAddress()
+//        return ResponseEntity.ok(mentors);
+//    }
+
+//
+//    @GetMapping("/all-members/address/{addressId}")
+//    public ResponseEntity<Page<Members>> getAllMembersByAddress(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "9000") int size){
+//        Pageable pageable = PageRequest.of(page,size);
+//        return ResponseEntity.ok(memberService.getAllMembersByAddress(pageable));
+//    }
+
+//    @GetMapping("/address/{addressId}")
+//    public ResponseEntity<List<Members>> getMembersByAddress(@PathVariable Long addressId){
+//        List<Members> members = memberService.findByAddressId(addressId);
+//        return ResponseEntity.ok(members);
+//    }
 
 //    @GetMapping("/members/nation/{nation}")
 //    public ResponseEntity<List<Members>> getMembersByNation(@PathVariable Nation nation) {

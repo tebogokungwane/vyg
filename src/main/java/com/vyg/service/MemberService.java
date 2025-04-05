@@ -1,6 +1,7 @@
 package com.vyg.service;
 
 import com.vyg.entity.Members;
+import com.vyg.enumerator.Nation;
 import com.vyg.enumerator.Role;
 import com.vyg.model.MemberRequest;
 import org.springframework.data.domain.Page;
@@ -19,14 +20,27 @@ public interface MemberService {
    Members updateMember(long id, MemberRequest memberRequest);
 
    List<Members> getMembersUnderMentor(Long mentorId);
+
    List<Members> getAllMentors();
 
-   Members assignMentor(Long memberId, Long mentorId);
 
+   Members login(String email, String password);
 
    List<Members> getMentorsByProvinceAndRegion(Role role, String provinceName, String regionName);
 
    Members createMentee(MemberRequest request);
 
-//   Optional<Members> getMentorAndMentees(Long mentorId);
+   List<Members>  getMentorsByAddress(long addressId);
+
+   List<Members> getAllMembersByAddress(long addressId);
+
+
+
+   List<Members> findByAddressId(Long addressId);
+
+   Page<Members> getAllMembersByAddress(Long addressId, Pageable pageable);
+
+   Page<Members> getAllSavedMembersByAddress(Long addressId,  Pageable pageable);
+
+
 }

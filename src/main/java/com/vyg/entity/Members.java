@@ -1,12 +1,14 @@
 package com.vyg.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vyg.enumerator.Gender;
 import com.vyg.enumerator.Role;
-import com.vyg.enumerator.Nation;
 import jakarta.persistence.*;
 import lombok.*;
+import com.vyg.entity.Nations;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -23,40 +25,43 @@ public class Members {
     private String name;
     private String surname;
 
+    @Column(unique = true)
+    private String email; // ✅ Add this line
+
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private String cellNumber;
 
     @ManyToOne
-    @JoinColumn(name = "province_id")
-    private Province province;
+    @JoinColumn(name = "address_id")  // foreign key
+    private Address address;
 
-    @ManyToOne
-    @JoinColumn(name = "region_id")
-    private Region region;
-
-    @ManyToOne
-    @JoinColumn(name = "branch_id")
-    private Branch branch;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Enumerated(EnumType.STRING)
-    private Nation nation;
+    @ManyToOne
+    @JoinColumn(name = "nation_id")
+    private Nations nation;
 
     private String password;
     private boolean isActive;
 
-    // ✅ Self-referencing relationship: A Member can have a Mentor
-    @JsonIgnore // ✅ Prevents infinite recursion
+    private String residentialAddress;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd MMMM yyyy HH:mm")
+    private LocalDateTime dateCreated;
+
+    private String capturedBy;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "mentor_id")
     private Members mentor;
 
-    @JsonIgnore // ✅ Prevents infinite recursion
-    // ✅ A Mentor can have multiple Members under them
+    @JsonIgnore
     @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Members> mentees;
+
 }

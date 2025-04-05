@@ -10,4 +10,7 @@ public interface NationPointsRepository extends JpaRepository<NationPoints, Long
     List<NationPoints> findByNation(Nation nation);
     List<NationPoints> findByProvince(String province);
     List<NationPoints> findByRegion(String region);
+
+//    List<NationPoints> findByChurchAddress(String churchAddress);
+
 }

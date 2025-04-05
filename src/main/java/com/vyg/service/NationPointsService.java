@@ -3,6 +3,7 @@ package com.vyg.service;
 import com.vyg.entity.NationPoints;
 import com.vyg.entity.BaseEvent;
 import com.vyg.enumerator.Nation;
+import com.vyg.model.NationPointsDTO;
 import com.vyg.model.NationPointsRequest;
 import com.vyg.repository.NationPointsRepository;
 import com.vyg.repository.BaseEventRepository;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class NationPointsService {
@@ -34,17 +36,24 @@ public class NationPointsService {
         Nation nation = Nation.valueOf(nationPointsRequest.getNationName().toUpperCase());
 
         NationPoints nationPoints = NationPoints.builder()
-                .province(nationPointsRequest.getProvince())
-                .region(nationPointsRequest.getRegion())
                 .nation(nation)
                 .event(eventOpt.get())
                 .weekNumber(nationPointsRequest.getWeekNumber())
-                .pointsEarned(nationPointsRequest.getPoints())
                 .build();
 
         return nationPointsRepository.save(nationPoints);
     }
-    public List<NationPoints> getNationPoints(Nation nation) {
-        return nationPointsRepository.findByNation(nation);
-    }
+
+//    public List<NationPointsDTO> getPointsByChurchAddress(String churchAddress) {
+//        return nationPointsRepository.findByChurchAddress(churchAddress)
+//                .stream()
+//                .map(point -> new NationPointsDTO(
+//                                point.getNation(),
+//                                point.getWeekNumber()
+////
+//                ))
+//                .collect(Collectors.toList());
+//    }
+
+
 }
