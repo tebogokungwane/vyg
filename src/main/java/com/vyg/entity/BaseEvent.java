@@ -19,15 +19,12 @@ import lombok.*;
 
         private String name;
         private int defaultPoints;
-
-//        @ManyToOne
-//        @JoinColumn(name = "event_id", nullable = true)
-//        private BaseEvent parentEvent;
-
+//        private boolean isVisible;
 
         public BaseEvent(String name, int defaultPoints) {
             this.name = name;
             this.defaultPoints = defaultPoints;
+//            this.isVisible = isVisible;
         }
     }
 

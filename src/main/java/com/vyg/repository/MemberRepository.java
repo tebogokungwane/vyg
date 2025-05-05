@@ -1,6 +1,7 @@
 package com.vyg.repository;
 
 import com.vyg.entity.Members;
+import com.vyg.entity.Nations;
 import com.vyg.enumerator.Nation;
 import com.vyg.enumerator.Role;
 import org.springframework.data.domain.Page;
@@ -16,10 +17,7 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
 
     List<Members> findByMentorId(Long mentorId);
 
-    //List<Members> getMenteesByMentor(Long mentorId);
-
     List<Members> findByAddressId(Long addressId);
-
 
     List<Members> findByRole(Role role);
 
@@ -29,11 +27,7 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
 
     Page<Members> findAllByAddressId(Long addressId, Pageable pageable);
 
-
-
-
-//
-//    List<Members> findByRoleAndProvince_NameAndRegion_Name(Role role, String provinceName, String regionName);
+    List<Nations> findAllByAddress_Id(Long addressId);
 
 
 }

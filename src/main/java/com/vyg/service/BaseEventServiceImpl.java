@@ -1,80 +1,54 @@
 package com.vyg.service;
 
 import com.vyg.entity.BaseEvent;
-import com.vyg.enumerator.DefaultBaseEvent;
-import com.vyg.model.BaseEventRequest;
+import com.vyg.exception.ResourceNotFoundException;
+import com.vyg.mapper.EventMapper;
+import com.vyg.dto.BaseEventRequest;
 import com.vyg.repository.BaseEventRepository;
-import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 
 @Service
+@RequiredArgsConstructor
 public class BaseEventServiceImpl implements BaseEventService {
 
     private final BaseEventRepository baseEventRepository;
 
-    public BaseEventServiceImpl(BaseEventRepository baseEventRepository) {
-        this.baseEventRepository = baseEventRepository;
-    }
 
     @Override
     public List<BaseEvent> getAllEvents() {
         return  baseEventRepository.findAll();
     }
 
-//    @PostConstruct
-//    @Transactional
-//    public void insertBaseEventsOnStartup(){
-//        Arrays.stream(DefaultBaseEvent.values()).forEach(eventEnum ->{
-//            baseEventRepository.findByName(eventEnum.getEventName()).ifPresentOrElse(
-//                    event -> {},
-//                    ()->{
-//                        BaseEvent newEvent = BaseEvent.builder()
-//                                .name(eventEnum.getEventName())
-//                                .defaultPoints(eventEnum.getDefaultPoints())
-//                                .build();
-//                        baseEventRepository.save(newEvent);
-//                        System.out.println("Inserted Base Events: "+ eventEnum.getEventName());
-//                    }
-//            );
-//        });
-//    }
+    @Transactional
+    @Override
+    public BaseEvent createEvent(BaseEventRequest baseEventRequest) {
 
-    /**
-     * Add multiple Base Events
-     */
-//    public List<BaseEvent> createBaseEvents(List<BaseEventRequest> baseEventRequests) {
-//        List<BaseEvent> baseEvents = baseEventRequests.stream()
-//                .map(request -> BaseEvent.builder()
-//                        .name(request.getEventName())
-//                        .defaultPoints(request.getDefaultPoints())
-//                        .build())
-//                .collect(Collectors.toList());
-//
-//        return baseEventRepository.saveAll(baseEvents);
-//    }
+        BaseEvent toEntity = EventMapper.toEntity(baseEventRequest);
+        baseEventRequest.setShowEvent(true);
 
-    /**
-     * Get all active Base Events
-     */
-//    public List<BaseEvent> getAllActiveBaseEvents() {
-//        return baseEventRepository.findByActiveTrue();
-//    }
+        BaseEvent saveBaseEvent = baseEventRepository.save(toEntity);
 
-    /**
-     * Soft delete (disable) a Base Event
-//     */
-//    public void disableBaseEvent(Long eventId) {
-//        BaseEvent baseEvent = baseEventRepository.findById(eventId)
-//                .orElseThrow(() -> new IllegalArgumentException("Event not found"));
-//
-//        baseEventRepository.save(baseEvent);
-//    }
+        return saveBaseEvent;
+    }
+
+    @Override
+    @Transactional
+    public BaseEvent updateEvent(Long id, BaseEventRequest baseEventRequest) {
+
+        BaseEvent event = baseEventRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not dound with ID : " + id));
+
+        event.setName(baseEventRequest.getEventName());
+        event.setDefaultPoints(baseEventRequest.getDefaultPoints());
+
+        return baseEventRepository.save(event);
+    }
+
+
 }
 

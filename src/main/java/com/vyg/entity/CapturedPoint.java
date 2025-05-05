@@ -47,4 +47,9 @@ public class CapturedPoint {
     private int year;
 
     private String capturedBy; // Optional: person who submitted the data
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
+
 }

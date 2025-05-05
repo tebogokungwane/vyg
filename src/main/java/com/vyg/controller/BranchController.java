@@ -1,6 +1,6 @@
 package com.vyg.controller;
 
-import com.vyg.model.BranchRequest;
+import com.vyg.dto.BranchRequest;
 import com.vyg.entity.Branch;
 import com.vyg.service.BranchService;
 import org.springframework.http.ResponseEntity;

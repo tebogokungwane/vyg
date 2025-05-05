@@ -2,7 +2,7 @@ package com.vyg;
 
 import com.vyg.enumerator.Branch;
 import com.vyg.enumerator.Province;
-import com.vyg.model.Address;
+import com.vyg.dto.Address;
 
 import java.util.List;
 

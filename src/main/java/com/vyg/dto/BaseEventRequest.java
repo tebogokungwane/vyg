@@ -1,4 +1,4 @@
-package com.vyg.model;
+package com.vyg.dto;
 
 
 import lombok.*;

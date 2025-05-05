@@ -1,13 +1,11 @@
 package com.vyg.service;
 
 import com.vyg.entity.Members;
-import com.vyg.enumerator.Nation;
 import com.vyg.enumerator.Role;
-import com.vyg.model.MemberRequest;
+import com.vyg.dto.MemberRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
-import java.util.Optional;
 
 public interface MemberService {
 

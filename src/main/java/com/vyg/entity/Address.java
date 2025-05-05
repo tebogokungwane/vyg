@@ -11,11 +11,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+
+
+
 public class Address {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address; // or ChurchAddress if that's the entity
+
 
     @Enumerated(EnumType.STRING)
     private Province province;

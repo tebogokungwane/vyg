@@ -1,9 +1,8 @@
 package com.vyg.controller;
 
 import com.vyg.entity.Members;
-import com.vyg.enumerator.Nation;
 import com.vyg.enumerator.Role;
-import com.vyg.model.MemberRequest;
+import com.vyg.dto.MemberRequest;
 import com.vyg.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.data.domain.Page;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Slf4j
@@ -101,10 +99,7 @@ public class MemberController {
     }
 
 
-    @GetMapping("/mentors/{province}/{region}")
-    public ResponseEntity<List<Members>> getMentorsByProvinceAndRegion(@PathVariable Role role, @PathVariable String provinceName,  @PathVariable String regionName ) {
-        return ResponseEntity.ok(memberService.getMentorsByProvinceAndRegion(role, provinceName, regionName));
-    }
+
 
 
     @GetMapping("/mentor/address/{addressId}")

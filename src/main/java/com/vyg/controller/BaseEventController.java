@@ -1,11 +1,12 @@
 package com.vyg.controller;
 
 
-import com.vyg.model.BaseEventRequest;
+import com.vyg.dto.BaseEventRequest;
 import com.vyg.entity.BaseEvent;
-import com.vyg.model.CapturedPointRequest;
+import com.vyg.dto.CapturedPointRequestV2;
 import com.vyg.service.BaseEventService;
 import com.vyg.service.CapturedPointServiceImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,14 +24,21 @@ public class BaseEventController {
         this.capturedPointService = capturedPointService;
     }
 
-    /**
-     * Create multiple Base Events
-     */
-//    @PostMapping("/create")
-//    public ResponseEntity<List<BaseEvent>> createBaseEvents(@RequestBody List<BaseEventRequest> baseEventRequests) {
-//        return ResponseEntity.ok(baseEventService.createBaseEvents(baseEventRequests));
-//    }
+    @PostMapping("/create")
+    public ResponseEntity<BaseEvent> createBaseEvent(@RequestBody BaseEventRequest baseEventRequest){
 
+        BaseEvent event = baseEventService.createEvent(baseEventRequest);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(event);
+    }
+
+    @PutMapping("update/{id}")
+    public ResponseEntity<BaseEvent> updateEvent(@PathVariable Long id, @RequestBody BaseEventRequest baseEventRequest){
+        BaseEvent updateEvent = baseEventService.updateEvent(id, baseEventRequest);
+        return ResponseEntity.ok(updateEvent);
+    }
 
     @GetMapping("/allEvents")
     public ResponseEntity<List<BaseEvent>> getAllActiveBaseEvents() {
@@ -38,7 +46,7 @@ public class BaseEventController {
     }
 
     @PostMapping("/capture")
-    public ResponseEntity<?> capturePoints(@RequestBody CapturedPointRequest request) {
+    public ResponseEntity<?> capturePoints(@RequestBody CapturedPointRequestV2 request) {
         try {
             capturedPointService.capturePoints(request);
             return ResponseEntity.ok("Points captured successfully");

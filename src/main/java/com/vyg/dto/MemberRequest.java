@@ -1,9 +1,8 @@
-package com.vyg.model;
+package com.vyg.dto;
 
 import com.vyg.entity.Nations;
 import com.vyg.enumerator.Gender;
 import com.vyg.enumerator.Role;
-import com.vyg.enumerator.Nation;
 import lombok.*;
 
 @Getter
@@ -22,8 +21,8 @@ public class MemberRequest {
     private long mentorId;
     private Nations nation;
     private String password;
-    private boolean isActive;
     private String residentialAddress;
     private String createBy;
+    private boolean isActive;
 
 }
