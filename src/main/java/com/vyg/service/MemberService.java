@@ -1,5 +1,7 @@
 package com.vyg.service;
 
+import com.vyg.dto.MentorDTO;
+import com.vyg.dto.UnassignedMenteeDTO;
 import com.vyg.entity.Members;
 import com.vyg.enumerator.Role;
 import com.vyg.dto.MemberRequest;
@@ -40,5 +42,11 @@ public interface MemberService {
 
    Page<Members> getAllSavedMembersByAddress(Long addressId,  Pageable pageable);
 
+
+    Members findById(Long id);
+
+    List<UnassignedMenteeDTO> getUnassignedMentees(Long addressId);
+
+    Page<MentorDTO> getMentorsWithMentees(Long addressId, int page, int size);
 
 }

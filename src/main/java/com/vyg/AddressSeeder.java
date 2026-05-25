@@ -47,6 +47,8 @@ public class AddressSeeder {
                 new Address(Province.GAUTENG, Branch.MABOPANE, "2733 Block B (Next to Tlameolong Clinic)"),
                 new Address(Province.GAUTENG, Branch.HAMMANSKRAAL, "4411 Unit 01 Temba, Kudube"),
                 // GAUTENG - Park Station
+
+                new Address(Province.GAUTENG, Branch.SOWETO, "Immink Dr, Diepkloof Zone 6, Soweto, 1864"),
                 new Address(Province.GAUTENG, Branch.PARK_STATION, "25 Plein Street, Johannesburg"),
 
 // GAUTENG - Soweto branches

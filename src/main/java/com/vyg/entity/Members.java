@@ -41,9 +41,10 @@ public class Members {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "nation_id")
+    @ManyToOne(optional = true) // explicit that it's nullable
+    @JoinColumn(name = "nation_id", nullable = true)
     private Nations nation;
+
 
     private String password;
     private boolean isActive;

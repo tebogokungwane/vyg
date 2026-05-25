@@ -3,27 +3,26 @@ package com.vyg.entity;
 import com.vyg.enumerator.Branch;
 import com.vyg.enumerator.Province;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+@ToString(exclude = {"address"}) // OPTION 1: Exclude here
+@EqualsAndHashCode(exclude = {"address"}) // Also recommended for safety
+
+
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder // Recommended for seeding
 @Entity
-
-
-
 public class Address {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "address_id")
-    private Address address; // or ChurchAddress if that's the entity
-
+    private Address address; // Parent address, optional
 
     @Enumerated(EnumType.STRING)
     private Province province;
@@ -33,11 +32,10 @@ public class Address {
 
     private String fullAddress;
 
-
+    // Manual constructor for standard fields (avoiding 'address')
     public Address(Province province, Branch branch, String fullAddress) {
         this.province = province;
         this.branch = branch;
         this.fullAddress = fullAddress;
     }
-
 }

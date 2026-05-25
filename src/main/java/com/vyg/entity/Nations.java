@@ -1,38 +1,46 @@
 package com.vyg.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-
-
+@Table(name = "nations")
+@Setter
+@Getter
 public class Nations {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nation;
-    private String imageName;
-    private String imageType;
-    @Column(name = "total_points")
-    private int totalPoints;
 
-    @Lob
-    @JsonIgnore
+    private String nation;
+
+    @Column(name = "image_data")
     private byte[] imageData;
 
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
 
 
-    public Nations(Object o, String name) {
+
+    @Column(name = "image_type")
+    private String imageType;
+
+    @Column(name = "image_name")
+    private String imageName;
+
+    //private boolean deleted = false;
+
+    @Column(name = "total_points")
+    private int totalPoints = 0; // ✅ ADD THIS
+
+//    // REQUIRED by JPA
+    public Nations() {
+    }
+
+    // ✅ ADD THIS CONSTRUCTOR
+    public Nations(String nation) {
+        this.nation = nation;
     }
 }

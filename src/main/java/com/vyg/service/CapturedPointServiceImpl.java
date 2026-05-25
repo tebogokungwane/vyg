@@ -1,5 +1,6 @@
 package com.vyg.service;
 
+import com.vyg.dto.PendingCapturedPointDTO;
 import com.vyg.entity.Address;
 import com.vyg.entity.BaseEvent;
 import com.vyg.entity.CapturedPoint;
@@ -7,6 +8,7 @@ import com.vyg.entity.Nations;
 //import com.vyg.model.CapturedPointRequest;
 import com.vyg.dto.CapturedPointRequestV2;
 //import com.vyg.model.NationPointsSummaryDTO;
+import com.vyg.enumerator.ApprovalStatus;
 import com.vyg.repository.AddressRepository;
 import com.vyg.repository.BaseEventRepository;
 import com.vyg.repository.CapturedPointRepository;
@@ -45,13 +47,31 @@ public class CapturedPointServiceImpl  {
             BaseEvent baseEvent = baseEventRepository.findById((long) eventId)
                     .orElseThrow(() -> new IllegalArgumentException("BaseEvent not found for ID: " + eventId));
 
-            boolean alreadyCaptured = capturedPointRepository.existsByNation_IdAndBaseEvent_IdAndWeekNumberAndYear(
-                    request.getNationId(), baseEvent.getId(), week, year
-            );
+//            boolean alreadyCaptured = capturedPointRepository.existsByNation_IdAndBaseEvent_IdAndWeekNumberAndYear(
+//                    request.getNationId(), baseEvent.getId(), week, year
+//            );
+            boolean alreadySubmitted =
+                    capturedPointRepository.existsByNation_IdAndBaseEvent_IdAndWeekNumberAndYear(
+                            (long) request.getNationId(),
+                            baseEvent.getId(),
+                            week,
+                            year
+                    );
 
-            if (alreadyCaptured) {
-                throw new IllegalStateException("Points already captured for event ID " + eventId + " this week.");
+            boolean alreadyApproved = capturedPointRepository
+                    .existsByNation_IdAndBaseEvent_IdAndWeekNumberAndYear(
+                            (long) request.getNationId(),
+                            baseEvent.getId(),
+                            week,
+                            year
+                   );
+
+            if (alreadyApproved) {
+                throw new IllegalStateException(
+                        "Points already approved for this event this week."
+                );
             }
+
 
 
             Address address = addressRepository.findById(request.getAddressId())
@@ -75,13 +95,11 @@ public class CapturedPointServiceImpl  {
                     .capturedBy(request.getCapturedBy())
                     .address(address) // ✅ SAVE address
                     .totalPointsEarnedPerWeek(numberOfPeople * baseEvent.getDefaultPoints())
+                    .approvalStatus(ApprovalStatus.PENDING)
                     .build();
 
             capturedPointRepository.save(point);
-//            totalPointsFromThisSubmission += points;
 
-            nation.setTotalPoints(nation.getTotalPoints() + totalPointsFromThisSubmission);
-            nationsRepository.save(nation);
         }
     }
 
@@ -101,11 +119,16 @@ public class CapturedPointServiceImpl  {
         Map<String, Integer> yearMap = new HashMap<>();
 
         for (CapturedPoint cp : allPoints) {
+            if (cp.getApprovalStatus() != ApprovalStatus.APPROVED) {
+                continue;
+            }
+
             String nation = cp.getNation().getNation();
             weekMap.merge(nation, cp.getTotalPointsEarnedPerWeek(), Integer::sum);
             monthMap.merge(nation, cp.getTotalPointsEarnedPerWeek(), Integer::sum);
             yearMap.merge(nation, cp.getTotalPointsEarnedPerWeek(), Integer::sum);
         }
+
 
         String topWeek = weekMap.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey).orElse("None");
         String topMonth = monthMap.entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey).orElse("None");
@@ -117,6 +140,59 @@ public class CapturedPointServiceImpl  {
         result.put("topYear", topYear);
         return result;
     }
+    public List<PendingCapturedPointDTO> getPendingPointsByAddress(Long addressId) {
+        return capturedPointRepository
+                .findByAddress_IdAndApprovalStatus(addressId, ApprovalStatus.PENDING)
+                .stream()
+                .map(cp -> new PendingCapturedPointDTO(
+                        cp.getId(),
+                        cp.getNation().getNation(),
+                        cp.getAddress().getFullAddress(),
+                        cp.getAddress().getFullAddress(),
+                        cp.getBaseEvent().getName(),
+                        cp.getNumberOfPeople(),
+                        cp.getPoints(),
+                        cp.getTotalPointsEarnedPerWeek(),
+                        cp.getDateCaptured(),
+                        cp.getCapturedBy()
+                ))
+                .toList();
+    }
 
 
+
+    @Transactional
+    public void approveCapturedPoint(Long capturedPointId, String approvedBy) {
+
+        CapturedPoint point = capturedPointRepository.findById(capturedPointId)
+                .orElseThrow(() -> new IllegalArgumentException("Captured point not found"));
+
+        if (point.getApprovalStatus() != ApprovalStatus.PENDING) {
+            throw new IllegalStateException("Point already processed");
+        }
+
+        Nations nation = point.getNation();
+
+        nation.setTotalPoints(
+                nation.getTotalPoints() + point.getTotalPointsEarnedPerWeek()
+        );
+
+        point.setApprovalStatus(ApprovalStatus.APPROVED);
+        point.setApprovedBy(approvedBy);
+        point.setApprovedDate(LocalDate.now());
+
+
+        nationsRepository.save(nation);
+        capturedPointRepository.save(point);
+    }
+
+    @Transactional
+    public void rejectCapturedPoint(Long id) {
+        CapturedPoint point = capturedPointRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Captured point not found"));
+        if (point.getApprovalStatus() != ApprovalStatus.PENDING) {
+            throw new IllegalStateException("Only pending points can be rejected");
+        }
+        capturedPointRepository.delete(point);
+    }
 }

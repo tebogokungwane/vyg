@@ -4,7 +4,9 @@ package com.vyg.entity;
     import jakarta.persistence.*;
 import lombok.*;
 
-    @Getter
+    import java.time.LocalDate;
+
+@Getter
     @Setter
     @Entity
     @Table(name = "base_events")
@@ -19,6 +21,8 @@ import lombok.*;
 
         private String name;
         private int defaultPoints;
+        private LocalDate eventDate;
+
 //        private boolean isVisible;
 
         public BaseEvent(String name, int defaultPoints) {

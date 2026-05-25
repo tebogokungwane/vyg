@@ -1,5 +1,7 @@
 package com.vyg.entity;
 
+import com.vyg.enumerator.ApprovalStatus;
+import com.vyg.enumerator.CaptureType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +12,17 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"nation_id", "base_event_id", "weekNumber", "year"}))
+@Table(
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {
+                        "nation_id",
+                        "base_event_id",
+                        "weekNumber",
+                        "year",
+                        "approvalStatus"
+                }
+        )
+)
 public class CapturedPoint {
 
     @Id
@@ -51,5 +63,15 @@ public class CapturedPoint {
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
+
+    // ✅ THIS IS WHAT "PENDING" MEANS
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
+    private String approvedBy;
+    private LocalDate approvedDate;
+    @Enumerated(EnumType.STRING)
+    private CaptureType captureType;
+
+
 
 }

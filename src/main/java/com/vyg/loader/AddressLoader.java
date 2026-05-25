@@ -4,21 +4,28 @@ import com.vyg.enumerator.Branch;
 import com.vyg.enumerator.Province;
 import com.vyg.entity.Address;
 import com.vyg.repository.AddressRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Slf4j
 @Component
+@Order(1)
+@RequiredArgsConstructor
 public class AddressLoader implements CommandLineRunner {
 
-    @Autowired
-    private AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
 
     @Override
     public void run(String... args) {
-        if (addressRepository.count() == 0) {
+        if (addressRepository.count() > 0) {
+            log.info("Addresses already exist, skipping seeding.");
+            return;
+        }
             List<Address> addresses = List.of(
 
                     new  Address(Province.GAUTENG, Branch.ALEXANDRA, "698 Pretoria Main Road, CnrLink Road"),
@@ -124,9 +131,6 @@ public class AddressLoader implements CommandLineRunner {
             );
 
             addressRepository.saveAll(addresses);
-            System.out.println("✔ Addresses seeded to the database.");
-        } else {
-            System.out.println("ℹ Addresses already exist, skipping seeding.");
-        }
+            log.info("Addresses seeded to the database.");
     }
 }

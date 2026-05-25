@@ -1,39 +1,22 @@
 package com.vyg.dto;
 
+import com.vyg.entity.BaseEvent;
+import com.vyg.entity.Nations;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.time.LocalDate;
+
+@Data
+@AllArgsConstructor
 public class NationPointsSummaryDTO {
 
-    private String nation;
-    private int week;
-    private String month;
-    private int year;
+    private Nations nation;
+    private BaseEvent baseEvent;
+    private int numberOfPeople;
     private int points;
+    private LocalDate dateCaptured;
 
-    public NationPointsSummaryDTO(String nation, int week, Object month, int year, int points) {
-        this.nation = nation;
-        this.week = week;
-        this.month = month.toString();
-        this.year = year;
-        this.points = points;
-    }
-
-
-    public String getNation() {
-        return nation;
-    }
-
-    public int getWeek() {
-        return week;
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public int getPoints() {
-        return points;
-    }
+    // Optional: default constructor if needed by frameworks
+    public NationPointsSummaryDTO() {}
 }

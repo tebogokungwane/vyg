@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface NationsRepository extends JpaRepository<Nations, Long> {
 
-    List<Nations> findByAddressId(Long addressId);
+//    List<Nations> findByAddressId(Long addressId);
 
 }

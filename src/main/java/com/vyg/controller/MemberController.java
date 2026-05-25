@@ -1,5 +1,7 @@
 package com.vyg.controller;
 
+import com.vyg.config.security.JwtUtil;
+import com.vyg.dto.LoginResponse;
 import com.vyg.entity.Members;
 import com.vyg.enumerator.Role;
 import com.vyg.dto.MemberRequest;
@@ -25,11 +27,18 @@ public class MemberController {
 
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
-    @PostMapping("/register")
-    public ResponseEntity<Members> registerMember(@RequestBody MemberRequest memberRequest) {
+    @PostMapping(
+            value = "/register",
+            consumes = "application/json",
+            produces = "application/json"
+    )    public ResponseEntity<Members> registerMember(@RequestBody MemberRequest memberRequest) {
         try {
-            log.info("Request body :" + memberRequest);
+            log.info("Request body :" + memberRequest.toString());
+            log.info("Request created by :" + memberRequest.getCreatedBy());
+
             Members member = memberService.createMember(memberRequest);
             return ResponseEntity.ok(member);
         } catch (Exception e) {
@@ -43,17 +52,28 @@ public class MemberController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Members> login(@RequestBody Map<String, String> credentials) {
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody Map<String, String> credentials
+    ) {
         String email = credentials.get("email");
         String password = credentials.get("password");
 
         Members member = memberService.login(email, password);
-        if (member != null) {
-            return ResponseEntity.ok(member);
-        } else {
+
+        if (member == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        String token = jwtUtil.generateToken(
+                member.getEmail(),
+                member.getRole().name()
+        );
+
+        return ResponseEntity.ok(
+                new LoginResponse(token, member)
+        );
     }
+
 
 
 
@@ -99,15 +119,11 @@ public class MemberController {
     }
 
 
-
-
-
     @GetMapping("/mentor/address/{addressId}")
     public ResponseEntity<List<Members>> getMentorsByAddress(@PathVariable Long addressId){
         List<Members> membersList = memberService.getMentorsByAddress(addressId);
         return ResponseEntity.ok(membersList);
     }
-
 
     @GetMapping("/all-members/address/{addressId}")
     public ResponseEntity<List<Members>> getAllMembersByAddress(@PathVariable Long addressId){
@@ -127,6 +143,41 @@ public class MemberController {
     }
 
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Members> getMemberById(@PathVariable Long id) {
+        Members member = memberService.findById(id);
+        if (member == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(member);
+    }
+
+    @PostMapping("/verifyPassword")
+    public ResponseEntity<Map<String, Boolean>> verifyPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String password = request.get("password");
+        Members member = memberService.login(email, password);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("valid", member != null);
+        return ResponseEntity.ok(response);
+    }
+    @GetMapping("/unassigned/{addressId}")
+    public ResponseEntity<?> getUnassignedMentees(@PathVariable Long addressId) {
+        return ResponseEntity.ok(
+                memberService.getUnassignedMentees(addressId)
+        );
+    }
+
+    @GetMapping("/mentor/with-mentees/address/{addressId}")
+    public ResponseEntity<?> getMentorsWithMentees(
+            @PathVariable Long addressId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return ResponseEntity.ok(
+                memberService.getMentorsWithMentees(addressId, page, size)
+        );
+    }
 
 
 
