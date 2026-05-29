@@ -59,7 +59,22 @@ public class UserDataInitializer implements CommandLineRunner {
                 .address(savedAddress)
                 .build();
 
-        memberRepository.save(defaultUser);
-        log.info("Default user 'Tebogo Kungwane' seeded successfully.");
+        Members defaultUserSmith = Members.builder()
+                .name("Smith")
+                .surname("Dlamini")
+                .cellNumber("07820759006")
+                .email("vincentlebza@gmail.com")
+                .gender(Gender.MALE)
+                .isActive(true)
+                .password(passwordEncoder.encode("vyg@123"))
+                .role(Role.SENIOR)
+                .capturedBy("system-admin")
+                .residentialAddress("Omonde View")
+                .dateCreated(LocalDateTime.now())
+                .address(savedAddress)
+                .build();
+
+        memberRepository.save(defaultUserSmith);
+        log.info("Default user 'Dlamini Smith' seeded successfully.");
     }
 }
