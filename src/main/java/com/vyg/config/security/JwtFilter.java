@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,6 +17,8 @@ import java.util.Collections;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
+
+    private static final Logger log = LoggerFactory.getLogger(JwtFilter.class);
 
     private final JwtUtil jwtUtil;
 
@@ -29,6 +33,18 @@ public class JwtFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
+        String method = request.getMethod();
+        String uri = request.getRequestURI();
+        String origin = request.getHeader("Origin");
+
+        log.debug("Incoming request: {} {} | Origin: {}", method, uri, origin);
+
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            log.debug("Preflight OPTIONS request for {} - passing through", uri);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -36,6 +52,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (jwtUtil.validateToken(token)) {
                 String email = jwtUtil.extractEmail(token);
+                log.debug("Valid JWT for user: {} on {} {}", email, method, uri);
 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
@@ -49,7 +66,11 @@ public class JwtFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                log.warn("Invalid JWT token on {} {}", method, uri);
             }
+        } else {
+            log.debug("No Authorization header on {} {}", method, uri);
         }
 
         filterChain.doFilter(request, response);
