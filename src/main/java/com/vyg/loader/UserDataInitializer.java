@@ -75,6 +75,9 @@ public class UserDataInitializer implements CommandLineRunner {
                 .build();
 
         memberRepository.save(defaultUserSmith);
-        log.info("Default user 'Dlamini Smith' seeded successfully.");
+        memberRepository.save(defaultUser);
+
+
+        log.info("Default user 'Dlamini Smith And Tebogo' seeded successfully.");
     }
 }
