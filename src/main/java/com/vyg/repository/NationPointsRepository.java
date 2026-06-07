@@ -2,7 +2,7 @@ package com.vyg.repository;
 
 //import com.vyg.entity.CapturedPoint;
 import com.vyg.entity.NationPoints;
-import com.vyg.enumerator.ApprovalStatus;
+//import com.vyg.enumerator.ApprovalStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +19,7 @@ public interface NationPointsRepository extends JpaRepository<NationPoints, Long
         WHERE UPPER(np.province) = UPPER(:province)
           AND UPPER(np.region) = UPPER(:region)
           AND EXTRACT(YEAR FROM e.event_date) = :year
+          AND np.approval_status = 'APPROVED'
         GROUP BY np.nation
         ORDER BY SUM(np.points_earned) DESC
         """, nativeQuery = true)
@@ -37,6 +38,7 @@ public interface NationPointsRepository extends JpaRepository<NationPoints, Long
           AND UPPER(np.region) = UPPER(:region)
           AND EXTRACT(MONTH FROM e.event_date) = :month
           AND EXTRACT(YEAR FROM e.event_date) = :year
+          AND np.approval_status = 'APPROVED'
         GROUP BY np.nation
         ORDER BY SUM(np.points_earned) DESC
         """, nativeQuery = true)
@@ -56,6 +58,7 @@ public interface NationPointsRepository extends JpaRepository<NationPoints, Long
           AND UPPER(np.region) = UPPER(:region)
           AND np.week_number = :week
           AND EXTRACT(YEAR FROM e.event_date) = :year
+          AND np.approval_status = 'APPROVED'
         GROUP BY np.nation
         ORDER BY SUM(np.points_earned) DESC
         """, nativeQuery = true)

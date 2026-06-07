@@ -28,5 +28,10 @@ public class PointsSummaryController {
                 pointsSummaryService.getSummary(addressId)
         );
     }
+
+    @GetMapping("/summary/all")
+    public ResponseEntity<List<NationPointsSummaryDTO>> getAllSummaries() {
+        return ResponseEntity.ok(pointsSummaryService.getAllSummaries());
+    }
 }
 

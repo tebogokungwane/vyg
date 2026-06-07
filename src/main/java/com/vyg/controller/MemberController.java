@@ -211,5 +211,14 @@ public class MemberController {
 //        return ResponseEntity.ok(memberService.getMentorAndMentees(mentorId));
 //    }
 
+    @Autowired
+    private com.vyg.service.ProjectRoleService projectRoleService;
+
+    @PutMapping("/{memberId}/transfer-branch")
+    public ResponseEntity<String> transferBranch(@PathVariable Long memberId,
+                                                 @RequestBody com.vyg.dto.TransferBranchRequest request) {
+        projectRoleService.transferBranch(memberId, request.getNewAddressId());
+        return ResponseEntity.ok("Member transferred successfully");
+    }
 
 }

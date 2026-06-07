@@ -1,5 +1,6 @@
 package com.vyg.entity;
 
+import com.vyg.enumerator.ApprovalStatus;
 import com.vyg.enumerator.Nation;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,4 +30,9 @@ public class NationPoints {
 
     private int weekNumber; // ✅ Tracks which week the points were earned
     private int pointsEarned; // ✅ Points earned by the nation for this event
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "approval_status")
+    private ApprovalStatus approvalStatus = ApprovalStatus.PENDING;
 }

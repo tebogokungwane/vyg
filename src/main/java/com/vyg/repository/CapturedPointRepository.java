@@ -38,6 +38,7 @@ public interface CapturedPointRepository extends JpaRepository<CapturedPoint, Lo
                 )
                 FROM CapturedPoint cp
                 WHERE cp.address.id = :addressId
+                  AND cp.approvalStatus = com.vyg.enumerator.ApprovalStatus.APPROVED
                 ORDER BY cp.dateCaptured DESC
             """)
     List<NationPointsSummaryDTO> getSummaryByAddress(@Param("addressId") Long addressId);
@@ -75,6 +76,21 @@ public interface CapturedPointRepository extends JpaRepository<CapturedPoint, Lo
             CaptureType captureType,
             ApprovalStatus approvalStatus
     );
+
+    @Query("""
+                SELECT new com.vyg.dto.NationPointsSummaryDTO(
+                    cp.nation,
+                    cp.baseEvent,
+                    cp.numberOfPeople,
+                    cp.points,
+                    cp.dateCaptured
+                )
+                FROM CapturedPoint cp
+                WHERE cp.approvalStatus = com.vyg.enumerator.ApprovalStatus.APPROVED
+                ORDER BY cp.dateCaptured DESC
+            """)
+    List<NationPointsSummaryDTO> getAllApprovedSummaries();
+
 
 
 

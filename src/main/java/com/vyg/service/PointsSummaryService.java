@@ -18,5 +18,9 @@ public class PointsSummaryService {
     public List<NationPointsSummaryDTO> getSummary(Long addressId) {
         return capturedPointRepository.getSummaryByAddress(addressId);
     }
+
+    public List<NationPointsSummaryDTO> getAllSummaries() {
+        return capturedPointRepository.getAllApprovedSummaries();
+    }
 }
 

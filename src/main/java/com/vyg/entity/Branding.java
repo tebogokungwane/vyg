@@ -19,7 +19,6 @@ public class Branding {
     @Column(nullable = false, unique = true)
     private String type; // "favicon" or "logo"
 
-    @Lob
     @Column(name = "image_data", nullable = false, columnDefinition = "bytea")
     private byte[] imageData;
 
