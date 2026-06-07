@@ -31,9 +31,12 @@ public class GlobalCorsFilter extends OncePerRequestFilter {
 
         log.debug("GlobalCorsFilter hit: {} {} | Origin: {}", method, uri, origin);
 
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        if (origin != null) {
+            response.setHeader("Access-Control-Allow-Origin", origin);
+        }
         response.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         if ("OPTIONS".equalsIgnoreCase(method)) {
             log.info("Preflight OPTIONS handled: {} | Origin: {}", uri, origin);
