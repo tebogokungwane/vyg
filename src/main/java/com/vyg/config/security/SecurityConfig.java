@@ -53,12 +53,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Ensure Spring Security explicitly pulls from your corsConfigurationSource() Bean above
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())
                 .formLogin(form -> form.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Handled correctly by your explicit OPTIONS permitAll rule
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/member/login", "/api/member/register", "/api/auth/**").permitAll()
                         .requestMatchers("/api/branding/**").permitAll()
@@ -70,6 +72,7 @@ public class SecurityConfig {
         log.info("SecurityFilterChain configured with CORS and JWT filter");
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
