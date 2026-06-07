@@ -39,9 +39,14 @@ public class JwtFilter extends OncePerRequestFilter {
 
         log.debug("Incoming request: {} {} | Origin: {}", method, uri, origin);
 
+        // FIX: Handle Preflight requests cleanly by responding 200 OK immediately
         if ("OPTIONS".equalsIgnoreCase(method)) {
-            log.debug("Preflight OPTIONS request for {} - passing through", uri);
-            filterChain.doFilter(request, response);
+            log.debug("Preflight OPTIONS request detected for {} - returning 200 OK", uri);
+            response.setHeader("Access-Control-Allow-Origin", "https://onrender.com");
+            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            response.setHeader("Access-Control-Allow-Headers", "*");
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
@@ -76,4 +81,3 @@ public class JwtFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-
