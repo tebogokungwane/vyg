@@ -23,56 +23,62 @@ import java.util.List;
 public class SecurityConfig {
 
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
-
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
-        log.info("SecurityConfig (security package) loaded");
+        log.info("[SYS-INIT] SecurityConfig instance instantiated.");
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
+        log.info("[CORS-INIT] Building explicit CORS security policies...");
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
-                "https://vyg-front-end.onrender.com",
+
+        List<String> allowedOrigins = List.of(
+                "https://onrender.com",
                 "http://localhost:3000",
                 "http://localhost:5173"
-        ));
+        );
+        log.info("[CORS-INIT] Allowed Application Origins: {}", allowedOrigins);
+
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Cache-Control"));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        log.info("CORS configuration registered with explicit origins");
+        log.info("[CORS-INIT] Native Engine CorsConfigurationSource registered successfully.");
         return source;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        log.info("[SECURITY-INIT] Binding policies into HTTP Security Filter Chain...");
         http
-                // Ensure Spring Security explicitly pulls from your corsConfigurationSource() Bean above
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> {
+                    csrf.disable();
+                    log.info("[SECURITY-INIT] CSRF verification disabled for API endpoints.");
+                })
                 .httpBasic(basic -> basic.disable())
                 .formLogin(form -> form.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Handled correctly by your explicit OPTIONS permitAll rule
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/member/login", "/api/member/register", "/api/auth/**").permitAll()
-                        .requestMatchers("/api/branding/**").permitAll()
-                        .requestMatchers("/api/projects/**").permitAll()
+                        .requestMatchers("/api/branding/**", "/api/projects/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        log.info("SecurityFilterChain configured with CORS and JWT filter");
+        log.info("[SECURITY-INIT] SecurityFilterChain successfully built and active.");
         return http.build();
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {
