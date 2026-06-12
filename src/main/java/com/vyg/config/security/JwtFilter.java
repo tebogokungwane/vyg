@@ -37,16 +37,20 @@ public class JwtFilter extends OncePerRequestFilter {
         String uri = request.getRequestURI();
         String origin = request.getHeader("Origin");
 
-        log.debug("Incoming request: {} {} | Origin: {}", method, uri, origin);
+        log.debug("[CORS-DEBUG] Incoming: {} {} | Origin: {} | Headers: {}", method, uri, origin, request.getHeader("Access-Control-Request-Headers"));
 
         // FIX: Handle Preflight requests cleanly by responding 200 OK immediately
         if ("OPTIONS".equalsIgnoreCase(method)) {
-            log.debug("Preflight OPTIONS request detected for {} - returning 200 OK", uri);
-            response.setHeader("Access-Control-Allow-Origin", "https://onrender.com");
+            log.info("[CORS-DEBUG] Preflight OPTIONS for {} | Origin: {} | Request-Method: {} | Request-Headers: {}",
+                    uri, origin,
+                    request.getHeader("Access-Control-Request-Method"),
+                    request.getHeader("Access-Control-Request-Headers"));
+            response.setHeader("Access-Control-Allow-Origin", origin != null ? origin : "https://onrender.com");
             response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.setHeader("Access-Control-Allow-Headers", "*");
+            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Cache-Control");
             response.setHeader("Access-Control-Allow-Credentials", "true");
             response.setStatus(HttpServletResponse.SC_OK);
+            log.info("[CORS-DEBUG] Preflight response sent with Allow-Origin: {}", origin);
             return;
         }
 
