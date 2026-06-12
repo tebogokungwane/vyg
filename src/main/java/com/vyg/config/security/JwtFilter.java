@@ -39,18 +39,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         log.debug("[CORS-DEBUG] Incoming: {} {} | Origin: {} | Headers: {}", method, uri, origin, request.getHeader("Access-Control-Request-Headers"));
 
-        // FIX: Handle Preflight requests cleanly by responding 200 OK immediately
+        // Let Spring's CorsFilter handle preflight - don't intercept here
         if ("OPTIONS".equalsIgnoreCase(method)) {
-            log.info("[CORS-DEBUG] Preflight OPTIONS for {} | Origin: {} | Request-Method: {} | Request-Headers: {}",
-                    uri, origin,
-                    request.getHeader("Access-Control-Request-Method"),
-                    request.getHeader("Access-Control-Request-Headers"));
-            response.setHeader("Access-Control-Allow-Origin", origin != null ? origin : "https://onrender.com");
-            response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Cache-Control");
-            response.setHeader("Access-Control-Allow-Credentials", "true");
-            response.setStatus(HttpServletResponse.SC_OK);
-            log.info("[CORS-DEBUG] Preflight response sent with Allow-Origin: {}", origin);
+            log.debug("[CORS-DEBUG] OPTIONS preflight for {} - passing to Spring CorsFilter", uri);
+            filterChain.doFilter(request, response);
             return;
         }
 
