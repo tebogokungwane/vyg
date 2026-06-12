@@ -24,6 +24,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     public JwtFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
+        log.info("[DEPLOY-CHECK] ✅ JwtFilter (com.vyg.config.security.JwtFilter) instantiated.");
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.vyg.config.security;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,22 +26,20 @@ public class SecurityConfig {
     private static final Logger log = LoggerFactory.getLogger(SecurityConfig.class);
     private final JwtFilter jwtFilter;
 
+    @Value("${app.cors.allowed-origins:https://vyg-front-end.onrender.com,http://localhost:3000,http://localhost:5173}")
+    private String allowedOriginsRaw;
+
     public SecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
-        log.info("[SYS-INIT] SecurityConfig instance instantiated.");
+        log.info("[DEPLOY-CHECK] ✅ SecurityConfig (com.vyg.config.security) instantiated.");
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
-        log.info("[CORS-INIT] Building explicit CORS security policies...");
         CorsConfiguration config = new CorsConfiguration();
 
-        List<String> allowedOrigins = List.of(
-                "https://vyg-front-end.onrender.com",
-                "http://localhost:3000",
-                "http://localhost:5173"
-        );
-        log.info("[CORS-INIT] Allowed Application Origins: {}", allowedOrigins);
+        List<String> allowedOrigins = List.of(allowedOriginsRaw.split(","));
+        log.info("[DEPLOY-CHECK] ✅ CORS Allowed Origins: {}", allowedOrigins);
 
         config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -52,31 +51,27 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        log.info("[CORS-INIT] Native Engine CorsConfigurationSource registered successfully.");
+        log.info("[DEPLOY-CHECK] ✅ CorsConfigurationSource registered.");
         return source;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        log.info("[SECURITY-INIT] Binding policies into HTTP Security Filter Chain...");
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> {
-                    csrf.disable();
-                    log.info("[SECURITY-INIT] CSRF verification disabled for API endpoints.");
-                })
+                .csrf(csrf -> csrf.disable())
                 .httpBasic(basic -> basic.disable())
                 .formLogin(form -> form.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/member/login", "/api/member/register", "/api/auth/**").permitAll()
+                        .requestMatchers("/", "/api/member/login", "/api/member/register", "/api/auth/**").permitAll()
                         .requestMatchers("/api/branding/**", "/api/projects/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        log.info("[SECURITY-INIT] SecurityFilterChain successfully built and active.");
+        log.info("[DEPLOY-CHECK] ✅ SecurityFilterChain built. JwtFilter class: {}", jwtFilter.getClass().getName());
         return http.build();
     }
 
