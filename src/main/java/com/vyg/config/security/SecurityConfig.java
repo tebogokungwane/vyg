@@ -36,7 +36,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         List<String> allowedOrigins = List.of(
-                "https://onrender.com",
+                "https://vyg-front-end.onrender.com",
                 "http://localhost:3000",
                 "http://localhost:5173"
         );
