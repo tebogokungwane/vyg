@@ -8,6 +8,7 @@ import com.vyg.enumerator.Branch;
 import com.vyg.enumerator.Province;
 import com.vyg.repository.AddressRepository;
 import com.vyg.repository.MemberRepository;
+import com.vyg.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -27,6 +29,11 @@ public class UserDataInitializer implements CommandLineRunner {
     private final MemberRepository memberRepository;
     private final AddressRepository addressRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
+
+    private String generatePassword() {
+        return UUID.randomUUID().toString().substring(0, 6);
+    }
 
     @Override
     @Transactional
@@ -44,14 +51,17 @@ public class UserDataInitializer implements CommandLineRunner {
                         "SOWETO address not found. Ensure AddressLoader runs first."
                 ));
 
+        String password1 = generatePassword();
+//        String password2 = generatePassword();
+        password1 = "vyg@123";
         Members defaultUser = Members.builder()
                 .name("Tebogo")
                 .surname("Kungwane")
                 .cellNumber("0711382940")
-                .email("kungwane@gmail.com")
+                .email("tjkungwane@gmail.com")
                 .gender(Gender.MALE)
                 .isActive(true)
-                .password(passwordEncoder.encode("vyg@123"))
+                .password(passwordEncoder.encode(password1))
                 .role(Role.SENIOR)
                 .capturedBy("system-admin")
                 .residentialAddress("2669 nicol street")
@@ -59,25 +69,27 @@ public class UserDataInitializer implements CommandLineRunner {
                 .address(savedAddress)
                 .build();
 
-        Members defaultUserSmith = Members.builder()
-                .name("Smith")
-                .surname("Dlamini")
-                .cellNumber("07820759006")
-                .email("vincentlebza@gmail.com")
-                .gender(Gender.MALE)
-                .isActive(true)
-                .password(passwordEncoder.encode("vyg@123"))
-                .role(Role.SENIOR)
-                .capturedBy("system-admin")
-                .residentialAddress("Omonde View")
-                .dateCreated(LocalDateTime.now())
-                .address(savedAddress)
-                .build();
+//        Members defaultUserSmith = Members.builder()
+//                .name("Smith")
+//                .surname("Dlamini")
+//                .cellNumber("07820759006")
+//                .email("vincentlebza@gmail.com")
+//                .gender(Gender.MALE)
+//                .isActive(true)
+//                .password(passwordEncoder.encode(password2))
+//                .role(Role.SENIOR)
+//                .capturedBy("system-admin")
+//                .residentialAddress("Omonde View")
+//                .dateCreated(LocalDateTime.now())
+//                .address(savedAddress)
+//                .build();
 
-        memberRepository.save(defaultUserSmith);
+//        memberRepository.save(defaultUserSmith);
         memberRepository.save(defaultUser);
 
+//        emailService.sendWelcomeEmail(defaultUserSmith.getEmail(), defaultUserSmith.getName(), password2);
+        emailService.sendWelcomeEmail(defaultUser.getEmail(), defaultUser.getName(), password1);
 
-        log.info("Default user 'Dlamini Smith And Tebogo' seeded successfully.");
+        log.info("Default user 'Tebogo Kungwane' seeded successfully.");
     }
 }

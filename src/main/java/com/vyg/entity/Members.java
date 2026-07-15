@@ -56,6 +56,9 @@ public class Members {
 
     private String capturedBy;
 
+    private Double latitude;
+    private Double longitude;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "mentor_id")
@@ -64,5 +67,9 @@ public class Members {
     @JsonIgnore
     @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Members> mentees;
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "school_institution_id", nullable = true)
+    private SchoolInstitution schoolInstitution;
 
 }

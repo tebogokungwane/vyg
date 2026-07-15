@@ -2,6 +2,7 @@ package com.vyg.controller;
 
 import com.vyg.config.security.JwtUtil;
 import com.vyg.dto.LoginResponse;
+import com.vyg.dto.NearbyMemberDTO;
 import com.vyg.entity.Members;
 import com.vyg.enumerator.Role;
 import com.vyg.dto.MemberRequest;
@@ -108,7 +109,7 @@ public class MemberController {
         return ResponseEntity.ok(memberRequest);
     }
 
-    @GetMapping("/{mentorId}/mentees")
+    @GetMapping("/{mentorId:\\d+}/mentees")
     public ResponseEntity<List<Members>> getMembersUnderMentor(@PathVariable Long mentorId) {
         return ResponseEntity.ok(memberService.getMembersUnderMentor(mentorId));
     }
@@ -143,7 +144,12 @@ public class MemberController {
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/all-system-members")
+    public ResponseEntity<List<Members>> getAllSystemMembers() {
+        return ResponseEntity.ok(memberService.getAllMembers(PageRequest.of(0, 9000)).getContent());
+    }
+
+    @GetMapping("/{id:\\d+}")
     public ResponseEntity<Members> getMemberById(@PathVariable Long id) {
         Members member = memberService.findById(id);
         if (member == null) {
@@ -160,6 +166,19 @@ public class MemberController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("valid", member != null);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<Map<String, String>> changePassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String currentPassword = request.get("currentPassword");
+        String newPassword = request.get("newPassword");
+        try {
+            memberService.changePassword(email, currentPassword, newPassword);
+            return ResponseEntity.ok(Map.of("message", "Password updated successfully"));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
     @GetMapping("/unassigned/{addressId}")
     public ResponseEntity<?> getUnassignedMentees(@PathVariable Long addressId) {
@@ -214,11 +233,18 @@ public class MemberController {
     @Autowired
     private com.vyg.service.ProjectRoleService projectRoleService;
 
-    @PutMapping("/{memberId}/transfer-branch")
+    @PutMapping("/{memberId:\\d+}/transfer-branch")
     public ResponseEntity<String> transferBranch(@PathVariable Long memberId,
                                                  @RequestBody com.vyg.dto.TransferBranchRequest request) {
         projectRoleService.transferBranch(memberId, request.getNewAddressId());
         return ResponseEntity.ok("Member transferred successfully");
+    }
+
+    @GetMapping("/nearby")
+    public ResponseEntity<List<NearbyMemberDTO>> getNearbyMembers(
+            @RequestParam Long addressId,
+            @RequestParam(defaultValue = "10") double radiusKm) {
+        return ResponseEntity.ok(memberService.findNearbyMembers(addressId, radiusKm));
     }
 
 }

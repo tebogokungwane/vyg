@@ -1,6 +1,7 @@
 package com.vyg.repository;
 
 import com.vyg.dto.NationMemberStatsDTO;
+import com.vyg.dto.NearbyMemberDTO;
 import com.vyg.entity.Members;
 import com.vyg.entity.Nations;
 import com.vyg.enumerator.Nation;
@@ -79,6 +80,28 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
     Page<Object[]> findMentorsWithMenteeCount(
             @Param("addressId") Long addressId,
             Pageable pageable
+    );
+
+    @Query(value = """
+        SELECT m.id, m.name, m.surname, m.cell_number, m.latitude, m.longitude,
+               (6371 * acos(
+                   cos(radians(:lat)) * cos(radians(m.latitude)) *
+                   cos(radians(m.longitude) - radians(:lng)) +
+                   sin(radians(:lat)) * sin(radians(m.latitude))
+               )) AS distance_km
+        FROM members m
+        WHERE m.latitude IS NOT NULL AND m.longitude IS NOT NULL
+          AND (6371 * acos(
+                   cos(radians(:lat)) * cos(radians(m.latitude)) *
+                   cos(radians(m.longitude) - radians(:lng)) +
+                   sin(radians(:lat)) * sin(radians(m.latitude))
+               )) <= :radiusKm
+        ORDER BY distance_km
+        """, nativeQuery = true)
+    List<Object[]> findNearbyMembers(
+            @Param("lat") double lat,
+            @Param("lng") double lng,
+            @Param("radiusKm") double radiusKm
     );
 
 }

@@ -32,6 +32,9 @@ public class Address {
 
     private String fullAddress;
 
+    private Double latitude;
+    private Double longitude;
+
     // Manual constructor for standard fields (avoiding 'address')
     public Address(Province province, Branch branch, String fullAddress) {
         this.province = province;

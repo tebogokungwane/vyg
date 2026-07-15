@@ -28,4 +28,8 @@ public class Schools {
     @JoinColumn(name = "address_id")  // foreign key
     private Address address;
 
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "school_institution_id", nullable = true)
+    private SchoolInstitution schoolInstitution;
+
 }

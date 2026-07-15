@@ -1,6 +1,7 @@
 package com.vyg.service;
 
 import com.vyg.dto.MentorDTO;
+import com.vyg.dto.NearbyMemberDTO;
 import com.vyg.dto.UnassignedMenteeDTO;
 import com.vyg.entity.Members;
 import com.vyg.enumerator.Role;
@@ -49,4 +50,7 @@ public interface MemberService {
 
     Page<MentorDTO> getMentorsWithMentees(Long addressId, int page, int size);
 
+    void changePassword(String email, String currentPassword, String newPassword);
+
+    List<NearbyMemberDTO> findNearbyMembers(Long addressId, double radiusKm);
 }

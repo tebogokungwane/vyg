@@ -1,6 +1,7 @@
 package com.vyg.service;
 
 import com.vyg.dto.MentorDTO;
+import com.vyg.dto.NearbyMemberDTO;
 import com.vyg.dto.UnassignedMenteeDTO;
 import com.vyg.entity.*;
 import com.vyg.enumerator.Role;
@@ -290,5 +291,42 @@ public class MemberServiceImpl implements MemberService {
         return new PageImpl<>(dtos, pageable, results.getTotalElements());
     }
 
+    @Override
+    public void changePassword(String email, String currentPassword, String newPassword) {
+        Members member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (!passwordEncoder.matches(currentPassword, member.getPassword())) {
+            throw new IllegalArgumentException("Current password is incorrect");
+        }
+
+        member.setPassword(passwordEncoder.encode(newPassword));
+        memberRepository.save(member);
+
+        emailService.sendPasswordChangedEmail(member.getEmail(), member.getName());
+    }
+
+    @Override
+    public List<NearbyMemberDTO> findNearbyMembers(Long addressId, double radiusKm) {
+        Address address = addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
+
+        if (address.getLatitude() == null || address.getLongitude() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Address has no coordinates");
+        }
+
+        return memberRepository.findNearbyMembers(address.getLatitude(), address.getLongitude(), radiusKm)
+                .stream()
+                .map(row -> new NearbyMemberDTO(
+                        ((Number) row[0]).longValue(),
+                        (String) row[1],
+                        (String) row[2],
+                        (String) row[3],
+                        row[4] != null ? ((Number) row[4]).doubleValue() : null,
+                        row[5] != null ? ((Number) row[5]).doubleValue() : null,
+                        ((Number) row[6]).doubleValue()
+                ))
+                .collect(Collectors.toList());
+    }
 
 }

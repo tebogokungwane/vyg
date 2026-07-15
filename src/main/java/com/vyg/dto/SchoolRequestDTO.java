@@ -16,4 +16,5 @@ public class SchoolRequestDTO {
     private String contactDetails;
     private Long addressId;
     private String createBy;
+    private Long schoolInstitutionId; // optional link to government school
 }

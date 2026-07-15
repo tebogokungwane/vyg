@@ -1,6 +1,7 @@
 package com.vyg.mapper;
 
 import com.vyg.entity.Address;
+import com.vyg.entity.SchoolInstitution;
 import com.vyg.entity.Schools;
 import com.vyg.dto.SchoolRequestDTO;
 
@@ -8,7 +9,11 @@ import java.time.LocalDateTime;
 
 public class SchoolMapper {
 
-    public static Schools toEntity(SchoolRequestDTO schoolRequestDTO, Address address){
+    public static Schools toEntity(SchoolRequestDTO schoolRequestDTO, Address address) {
+        return toEntity(schoolRequestDTO, address, null);
+    }
+
+    public static Schools toEntity(SchoolRequestDTO schoolRequestDTO, Address address, SchoolInstitution institution) {
 
         Schools schools = new Schools();
         schools.setSchoolName(schoolRequestDTO.getSchoolName());
@@ -18,6 +23,7 @@ public class SchoolMapper {
         schools.setMentor(schoolRequestDTO.getMentor());
         schools.setCreateBy(schoolRequestDTO.getCreateBy());
         schools.setAddress(address);
+        schools.setSchoolInstitution(institution);
         schools.setDateCreated(LocalDateTime.now());
 
         return schools;
