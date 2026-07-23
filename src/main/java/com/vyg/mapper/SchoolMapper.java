@@ -26,7 +26,14 @@ public class SchoolMapper {
         schools.setSchoolInstitution(institution);
         schools.setDateCreated(LocalDateTime.now());
 
+        // New contact fields
+        schools.setContactTeacherName(schoolRequestDTO.getContactTeacherName());
+        schools.setContactTeacherPhone(schoolRequestDTO.getContactTeacherPhone());
+        schools.setContactTeacherEmail(schoolRequestDTO.getContactTeacherEmail());
+        schools.setPrincipalName(schoolRequestDTO.getPrincipalName());
+        schools.setPrincipalPhone(schoolRequestDTO.getPrincipalPhone());
+        schools.setPrincipalEmail(schoolRequestDTO.getPrincipalEmail());
+
         return schools;
     }
-
 }

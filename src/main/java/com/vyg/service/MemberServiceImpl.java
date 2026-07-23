@@ -151,7 +151,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public Members login(String email, String password) {
-        Members member = memberRepository.findByEmail(email).orElse(null);
+        Members member = memberRepository.findByEmailWithDetails(email).orElse(null);
         if (member == null || !passwordEncoder.matches(password, member.getPassword())) {
             return null;
         }

@@ -3,3 +3,21 @@ databaseChangeLog:
       file: db/changelog/changes/001-create-school-institution-table.yaml
   - include:
       file: db/changelog/changes/002-load-school-institution-data.yaml
+  - include:
+      file: db/changelog/changes/003-create-learner-contact-visit-tables.yaml
+  - include:
+      file: db/changelog/changes/004-add-school-contact-fields.yaml
+  - include:
+      file: db/changelog/changes/005-seed-visit-types.yaml
+  - include:
+      file: db/changelog/changes/006-add-school-import-fields.yaml
+  - include:
+      file: db/changelog/changes/007-seed-schools-batch-1.yaml
+  - include:
+      file: db/changelog/changes/008-seed-schools-batch-2.yaml
+  - include:
+      file: db/changelog/changes/009-add-learner-programme-fields.yaml
+  - include:
+      file: db/changelog/changes/010-seed-learners-batch-1.yaml
+  - include:
+      file: db/changelog/changes/011-seed-learners-batch-2.yaml

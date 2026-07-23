@@ -4,7 +4,7 @@ import com.vyg.dto.PagedResponse;
 import com.vyg.dto.SchoolInstitutionRequestDTO;
 import com.vyg.entity.SchoolInstitution;
 import com.vyg.service.SchoolInstitutionService;
-//import jakarta.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

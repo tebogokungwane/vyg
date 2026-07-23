@@ -1,5 +1,6 @@
 package com.vyg.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public class Nations {
 
     private String nation;
 
+    @JsonIgnore
     @Column(name = "image_data")
     private byte[] imageData;
 

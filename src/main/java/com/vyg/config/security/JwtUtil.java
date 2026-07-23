@@ -17,8 +17,13 @@ public class JwtUtil {
 
     private static final long EXPIRATION = 1000 * 60 * 60 * 24; // 24 hours
 
+    private volatile Key cachedSigningKey;
+
     private Key getSigningKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        if (cachedSigningKey == null) {
+            cachedSigningKey = Keys.hmacShaKeyFor(secret.getBytes());
+        }
+        return cachedSigningKey;
     }
 
     public String generateToken(String email, String role) {

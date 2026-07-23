@@ -51,6 +51,12 @@ public class SchoolServiceImpl implements SchoolService{
         school.setPersonToContact(dto.getPersonToContact());
         school.setContactDetails(dto.getContactDetails());
         school.setMentor(dto.getMentor());
+        school.setContactTeacherName(dto.getContactTeacherName());
+        school.setContactTeacherPhone(dto.getContactTeacherPhone());
+        school.setContactTeacherEmail(dto.getContactTeacherEmail());
+        school.setPrincipalName(dto.getPrincipalName());
+        school.setPrincipalPhone(dto.getPrincipalPhone());
+        school.setPrincipalEmail(dto.getPrincipalEmail());
 
         if (dto.getSchoolInstitutionId() != null) {
             SchoolInstitution institution = schoolInstitutionRepository.findById(dto.getSchoolInstitutionId())
