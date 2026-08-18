@@ -40,6 +40,7 @@ public class UserDataInitializer implements CommandLineRunner {
     public void run(String... args) {
         if (memberRepository.count() > 0) {
             log.info("Default user already exists, skipping initialization.");
+            seedParkStationMember();
             return;
         }
 
@@ -52,8 +53,8 @@ public class UserDataInitializer implements CommandLineRunner {
                 ));
 
         String password1 = generatePassword();
-//        String password2 = generatePassword();
         password1 = "vyg@123";
+
         Members defaultUser = Members.builder()
                 .name("Tebogo")
                 .surname("Kungwane")
@@ -69,27 +70,64 @@ public class UserDataInitializer implements CommandLineRunner {
                 .address(savedAddress)
                 .build();
 
-//        Members defaultUserSmith = Members.builder()
-//                .name("Smith")
-//                .surname("Dlamini")
-//                .cellNumber("07820759006")
-//                .email("vincentlebza@gmail.com")
-//                .gender(Gender.MALE)
-//                .isActive(true)
-//                .password(passwordEncoder.encode(password2))
-//                .role(Role.SENIOR)
-//                .capturedBy("system-admin")
-//                .residentialAddress("Omonde View")
-//                .dateCreated(LocalDateTime.now())
-//                .address(savedAddress)
-//                .build();
+        Members defaultUserSmith = Members.builder()
+                .name("Smith")
+                .surname("Dlamini")
+                .cellNumber("07820759006")
+                .email("vincentlebza@gmail.com")
+                .gender(Gender.MALE)
+                .isActive(true)
+                .password(passwordEncoder.encode(password1))
+                .role(Role.SENIOR)
+                .capturedBy("system-admin")
+                .residentialAddress("Omonde View")
+                .dateCreated(LocalDateTime.now())
+                .address(savedAddress)
+                .build();
 
-//        memberRepository.save(defaultUserSmith);
+        memberRepository.save(defaultUserSmith);
         memberRepository.save(defaultUser);
 
 //        emailService.sendWelcomeEmail(defaultUserSmith.getEmail(), defaultUserSmith.getName(), password2);
         emailService.sendWelcomeEmail(defaultUser.getEmail(), defaultUser.getName(), password1);
 
         log.info("Default user 'Tebogo Kungwane' seeded successfully.");
+
+        seedParkStationMember();
+    }
+
+    private void seedParkStationMember() {
+        String email = "Mcastro.za96@gmail.com";
+        if (memberRepository.findByEmail(email).isPresent()) {
+            log.info("Member '{}' already exists, skipping.", email);
+            return;
+        }
+
+        Address parkStationAddress = addressRepository
+                .findByProvinceAndBranch(Province.GAUTENG, Branch.PARK_STATION)
+                .orElseThrow(() -> new RuntimeException(
+                        "PARK_STATION address not found. Ensure AddressLoader runs first."
+                ));
+
+        String password = "vyg@123";
+        Members makeCastro = Members.builder()
+                .name("Make")
+                .surname("Castro")
+                .cellNumber("0660060763")
+                .email(email)
+                .gender(Gender.MALE)
+                .isActive(true)
+                .password(passwordEncoder.encode(password))
+                .role(Role.SENIOR)
+                .capturedBy("system-admin")
+                .residentialAddress("Johannesburg CBD")
+                .dateCreated(LocalDateTime.now())
+                .address(parkStationAddress)
+                .build();
+
+        memberRepository.save(makeCastro);
+        emailService.sendWelcomeEmail(makeCastro.getEmail(), makeCastro.getName(), password);
+
+        log.info("Member 'Make Castro' (PARK_STATION) seeded successfully.");
     }
 }

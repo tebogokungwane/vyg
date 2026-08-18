@@ -5,8 +5,6 @@ import com.vyg.entity.SchoolInstitution;
 import com.vyg.entity.Schools;
 import com.vyg.dto.SchoolRequestDTO;
 
-import java.time.LocalDateTime;
-
 public class SchoolMapper {
 
     public static Schools toEntity(SchoolRequestDTO schoolRequestDTO, Address address) {
@@ -24,7 +22,6 @@ public class SchoolMapper {
         schools.setCreateBy(schoolRequestDTO.getCreateBy());
         schools.setAddress(address);
         schools.setSchoolInstitution(institution);
-        schools.setDateCreated(LocalDateTime.now());
 
         return schools;
     }

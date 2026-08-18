@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- ==================== ADD address_id COLUMN ==================== -->
+    <changeSet id="004-01-add-address-id-to-vyg-school" author="vyg-system">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="vyg_school" columnName="address_id"/></not>
+        </preConditions>
+        <addColumn tableName="vyg_school">
+            <column name="address_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

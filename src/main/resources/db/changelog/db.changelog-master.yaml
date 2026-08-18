@@ -3,3 +3,7 @@ databaseChangeLog:
       file: db/changelog/changes/001-create-school-institution-table.yaml
   - include:
       file: db/changelog/changes/002-load-school-institution-data.yaml
+  - include:
+      file: db/changelog/changes/003-create-school-learner-tables.xml
+  - include:
+      file: db/changelog/changes/004-add-address-to-vyg-school.xml

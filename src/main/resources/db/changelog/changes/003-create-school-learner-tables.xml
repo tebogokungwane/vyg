@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- ==================== SCHOOL TABLE ==================== -->
+    <changeSet id="003-01-create-school-table" author="vyg-system">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="vyg_school"/></not>
+        </preConditions>
+        <createTable tableName="vyg_school">
+            <column name="school_id" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="school_image" type="VARCHAR(500)"/>
+            <column name="school_name" type="VARCHAR(255)"/>
+            <column name="area" type="VARCHAR(100)"/>
+            <column name="province" type="VARCHAR(10)"/>
+            <column name="contact_teacher_name" type="VARCHAR(100)"/>
+            <column name="contact_teacher_phone" type="VARCHAR(20)"/>
+            <column name="contact_teacher_email" type="VARCHAR(255)"/>
+            <column name="grades_involved" type="VARCHAR(500)"/>
+            <column name="active_programmes" type="VARCHAR(500)"/>
+            <column name="status" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ==================== LEARNER TABLE ==================== -->
+    <changeSet id="003-02-create-learner-table" author="vyg-system">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="vyg_learner"/></not>
+        </preConditions>
+        <createTable tableName="vyg_learner">
+            <column name="learner_id" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="school_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="grade" type="VARCHAR(10)"/>
+            <column name="gender" type="VARCHAR(10)"/>
+            <column name="programme_interests" type="VARCHAR(50)"/>
+            <column name="needs_mentor" type="BOOLEAN"/>
+            <column name="status" type="VARCHAR(20)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ==================== FOREIGN KEY ==================== -->
+    <changeSet id="003-03-add-fk-learner-school" author="vyg-system">
+        <preConditions onFail="MARK_RAN">
+            <not><foreignKeyConstraintExists foreignKeyName="fk_learner_school"/></not>
+        </preConditions>
+        <addForeignKeyConstraint
+            baseTableName="vyg_learner"
+            baseColumnNames="school_id"
+            constraintName="fk_learner_school"
+            referencedTableName="vyg_school"
+            referencedColumnNames="school_id"/>
+    </changeSet>
+
+    <!-- ==================== SCHOOL INSERTS ==================== -->
+    <changeSet id="003-04-insert-schools" author="vyg-system">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM vyg_school</sqlCheck>
+        </preConditions>
+        <loadData tableName="vyg_school"
+                  file="db/changelog/data/vyg_school_data.csv"
+                  separator=","
+                  encoding="UTF-8"/>
+    </changeSet>
+
+    <!-- ==================== LEARNER INSERTS ==================== -->
+    <changeSet id="003-05-insert-learners" author="vyg-system">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(*) FROM vyg_learner</sqlCheck>
+        </preConditions>
+        <loadData tableName="vyg_learner"
+                  file="db/changelog/data/vyg_learner_data.csv"
+                  separator=","
+                  encoding="UTF-8"/>
+    </changeSet>
+
+</databaseChangeLog>

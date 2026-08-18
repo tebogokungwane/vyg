@@ -1,0 +1,12 @@
+school_id,school_image,school_name,area,province,contact_teacher_name,contact_teacher_phone,contact_teacher_email,grades_involved,active_programmes,status
+SCH-001,,Soweto Secondary School,Park Station,GP,Ms. N. Dlamini,0721112233,ndlamini@sowetoss.edu.za,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Forming You,Sports,Career",In-Active
+S001,,Linmeyer High School,Park Station,GP,Mr D. Molefe,721112233,dmolefe@linmeyerhs.co.za,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Forming You,Sports,Career",In-Active
+S002,,Mamelodi Secondary,Park Station,GP,Ms N. Dlamini,732223344,ndlamini@mamsec.co.za,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Forming You,Arts,Media",In-Active
+S003,,Khayelitsha High,Park Station,WC,Mr S. Jacobs,743334455,sjacobs@khayehi.co.za,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Forming You,Sports",A-REJ
+S004,,Umlazi Comprehensive,Park Station,KZN,Ms T. Zulu,714445566,tzulu@umlazicomp.co.za,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Forming You,Career",In-Active
+S005,,Galeshewe Tech,Park Station,NC,Mr P. Nare,785556677,pnare@gtech.co.za,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Forming You,Media",A-REJ
+50659d03,,The Hill High School,Park Station,GP,Mr. SMITH,0660060763,mcastro.za96@gmail.com,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Sport, Arts and Culture",In-Active
+a97d4e77,,Pride learning,Park Station,GP,Mr Ndlovu,0123456789,pridelearning@gmail.com,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12",All programmes,A-ACT
+eaf07315,Schools_Images/eaf07315.School Image.201434.jpg,Eveline Independent School,Park Station,GP,,0,mcastro.za96@gmail.com,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Arts and Culture , Sport",A-ACT
+5fac4a28,Schools_Images/5fac4a28.School Image.201422.jpg,Gem Meg,Park Station,GP,,0,gem@gmail.com,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12","Sport , Arts and Culture",A-ACT
+dda843b0,Schools_Images/dda843b0.School Image.201446.jpg,Whitestone,Park Station,GP,0,0,whitestoneschool@gmail.com,"Grade 8 , Grade 9 , Grade 10 , Grade 11 , Grade 12",All programmes,A-ACT

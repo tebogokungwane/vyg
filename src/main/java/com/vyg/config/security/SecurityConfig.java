@@ -68,6 +68,10 @@ public class SecurityConfig {
                         .requestMatchers("/", "/api/member/login", "/api/member/register", "/api/auth/**").permitAll()
                         .requestMatchers("/api/branding/**", "/api/projects/**").permitAll()
                         .requestMatchers("/api/school-institutions/**").permitAll()
+                        .requestMatchers("/api/learners/**").permitAll()
+                        .requestMatchers("/api/schools/**").permitAll()
+                        .requestMatchers("/api/advertisements/**").permitAll()
+                        .requestMatchers("/api/test-email").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

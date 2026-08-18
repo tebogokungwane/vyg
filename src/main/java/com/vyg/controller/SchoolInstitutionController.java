@@ -4,7 +4,7 @@ import com.vyg.dto.PagedResponse;
 import com.vyg.dto.SchoolInstitutionRequestDTO;
 import com.vyg.entity.SchoolInstitution;
 import com.vyg.service.SchoolInstitutionService;
-//import jakarta.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -137,7 +137,7 @@ public class SchoolInstitutionController {
      * POST /api/school-institutions
      */
     @PostMapping
-    public ResponseEntity<SchoolInstitution> create(@Valid @RequestBody SchoolInstitutionRequestDTO dto) {
+    public ResponseEntity<SchoolInstitution> create(@RequestBody SchoolInstitutionRequestDTO dto) {
         SchoolInstitution created = service.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -150,7 +150,7 @@ public class SchoolInstitutionController {
     @PutMapping("/{id}")
     public ResponseEntity<SchoolInstitution> update(
             @PathVariable Long id,
-            @Valid @RequestBody SchoolInstitutionRequestDTO dto) {
+            @RequestBody SchoolInstitutionRequestDTO dto) {
         SchoolInstitution updated = service.update(id, dto);
         return ResponseEntity.ok(updated);
     }
