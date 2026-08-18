@@ -71,7 +71,7 @@ public class MemberController {
         );
 
         return ResponseEntity.ok(
-                new LoginResponse(token, member)
+                LoginResponse.from(token, member)
         );
     }
 

@@ -2,6 +2,7 @@ package com.vyg.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vyg.enumerator.Gender;
 import com.vyg.enumerator.Role;
 import jakarta.persistence.*;
@@ -16,6 +17,9 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(indexes = {
+        @Index(name = "idx_members_email", columnList = "email")
+})
 public class Members {
 
     @Id
@@ -33,16 +37,18 @@ public class Members {
 
     private String cellNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")  // foreign key
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Address address;
 
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToOne(optional = true) // explicit that it's nullable
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "nation_id", nullable = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Nations nation;
 
 
@@ -68,8 +74,9 @@ public class Members {
     @OneToMany(mappedBy = "mentor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Members> mentees;
 
-    @ManyToOne(optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "school_institution_id", nullable = true)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private SchoolInstitution schoolInstitution;
 
 }
