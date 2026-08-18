@@ -30,6 +30,13 @@ public class Schools {
     private String status;
     private LocalDateTime dateCreated;
 
+    private String contactTeacherName;
+    private String contactTeacherPhone;
+    private String contactTeacherEmail;
+    private String principalName;
+    private String principalPhone;
+    private String principalEmail;
+
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
