@@ -46,17 +46,25 @@ public class LearnerController {
     /**
      * GET /api/learners/schools-with-learners
      * Returns schools with their learners for the logged-in user's branch address.
+     * If no auth or user has no address, returns all schools.
      */
     @GetMapping("/schools-with-learners")
     public ResponseEntity<List<SchoolWithLearnersDTO>> getSchoolsForLoggedInUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Members member = memberRepository.findByEmail(email).orElse(null);
-
-        if (member == null || member.getAddress() == null) {
-            return ResponseEntity.ok(Collections.emptyList());
+        try {
+            String email = SecurityContextHolder.getContext().getAuthentication().getName();
+            if (email != null && !email.equals("anonymousUser")) {
+                Members member = memberRepository.findByEmail(email).orElse(null);
+                if (member != null && member.getAddress() != null) {
+                    List<SchoolWithLearnersDTO> result = learnerService.getSchoolsWithLearnersByAddress(member.getAddress().getId());
+                    if (!result.isEmpty()) {
+                        return ResponseEntity.ok(result);
+                    }
+                }
+            }
+        } catch (Exception ignored) {
         }
-
-        return ResponseEntity.ok(learnerService.getSchoolsWithLearnersByAddress(member.getAddress().getId()));
+        // Fallback: return all schools
+        return ResponseEntity.ok(learnerService.getAllSchoolsWithLearners());
     }
 
     /**
