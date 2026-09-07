@@ -10,6 +10,7 @@ import com.vyg.repository.SchoolsRepository;
 import com.vyg.repository.VygLearnerRepository;
 import com.vyg.repository.VygSchoolRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LearnerServiceImpl implements LearnerService {
@@ -73,13 +75,20 @@ public class LearnerServiceImpl implements LearnerService {
         List<VygSchool> vygSchools = vygSchoolRepository.findAll();
         vygSchools.stream().map(this::mapVygSchoolToDTO).forEach(result::add);
 
-        // Registered schools that DON'T already have a VygSchool entry
-        List<Schools> registeredSchools = schoolsRepository.findAll();
-        List<String> vygSchoolIds = vygSchools.stream().map(VygSchool::getSchoolId).toList();
-        registeredSchools.stream()
-                .filter(s -> !vygSchoolIds.contains(s.getSchoolCode()))
-                .map(this::mapRegisteredSchoolToDTO)
-                .forEach(result::add);
+        // Registered schools that DON'T already have a VygSchool entry.
+        // Wrapped defensively: if the `schools` table has a schema mismatch
+        // (e.g. a column missing under ddl-auto=update), we still return the
+        // seeded VygSchools instead of failing the whole endpoint with a 500.
+        try {
+            List<Schools> registeredSchools = schoolsRepository.findAll();
+            List<String> vygSchoolIds = vygSchools.stream().map(VygSchool::getSchoolId).toList();
+            registeredSchools.stream()
+                    .filter(s -> !vygSchoolIds.contains(s.getSchoolCode()))
+                    .map(this::mapRegisteredSchoolToDTO)
+                    .forEach(result::add);
+        } catch (Exception e) {
+            log.error("Failed to load registered schools; returning seeded schools only. Cause: {}", e.getMessage());
+        }
 
         return result;
     }
@@ -92,13 +101,18 @@ public class LearnerServiceImpl implements LearnerService {
         List<VygSchool> vygSchools = vygSchoolRepository.findByAddress_Id(addressId);
         vygSchools.stream().map(this::mapVygSchoolToDTO).forEach(result::add);
 
-        // Registered schools for this address that DON'T already have a VygSchool entry
-        List<Schools> registeredSchools = schoolsRepository.findSchoolsByAddress_Id(addressId);
-        List<String> vygSchoolIds = vygSchools.stream().map(VygSchool::getSchoolId).toList();
-        registeredSchools.stream()
-                .filter(s -> !vygSchoolIds.contains(s.getSchoolCode()))
-                .map(this::mapRegisteredSchoolToDTO)
-                .forEach(result::add);
+        // Registered schools for this address that DON'T already have a VygSchool entry.
+        // Wrapped defensively for the same reason as getAllSchoolsWithLearners().
+        try {
+            List<Schools> registeredSchools = schoolsRepository.findSchoolsByAddress_Id(addressId);
+            List<String> vygSchoolIds = vygSchools.stream().map(VygSchool::getSchoolId).toList();
+            registeredSchools.stream()
+                    .filter(s -> !vygSchoolIds.contains(s.getSchoolCode()))
+                    .map(this::mapRegisteredSchoolToDTO)
+                    .forEach(result::add);
+        } catch (Exception e) {
+            log.error("Failed to load registered schools for address {}; returning seeded schools only. Cause: {}", addressId, e.getMessage());
+        }
 
         return result;
     }
