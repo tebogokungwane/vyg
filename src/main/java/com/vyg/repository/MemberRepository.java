@@ -8,6 +8,7 @@ import com.vyg.enumerator.Nation;
 import com.vyg.enumerator.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,8 +31,16 @@ public interface MemberRepository extends JpaRepository<Members, Long> {
     @Query("SELECT m FROM Members m LEFT JOIN FETCH m.address LEFT JOIN FETCH m.nation WHERE m.email = :email")
     Optional<Members> findByEmailWithDetails(@Param("email") String email);
 
+    @Query("SELECT m FROM Members m " +
+           "LEFT JOIN FETCH m.address " +
+           "LEFT JOIN FETCH m.nation " +
+           "LEFT JOIN FETCH m.schoolInstitution " +
+           "WHERE m.id = :id")
+    Optional<Members> findByIdWithDetails(@Param("id") Long id);
+
     List<Members> findByRoleAndAddressId(Role role, Long addressId);
 
+    @EntityGraph(attributePaths = {"address", "nation", "schoolInstitution"})
     Page<Members> findAllByAddressId(Long addressId, Pageable pageable);
 
     List<Nations> findAllByAddress_Id(Long addressId);

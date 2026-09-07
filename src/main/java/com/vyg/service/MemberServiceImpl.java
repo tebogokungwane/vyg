@@ -229,7 +229,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public Members findById(Long id) {
-        return memberRepository.findById(id)
+        // Eager-fetch lazy relations (address, nation, schoolInstitution) so the
+        // entity can be serialized after the session closes (prod runs with
+        // open-in-view=false). Falls back to a plain lookup if the fetch fails.
+        return memberRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new RuntimeException("Member not found with id " + id));
     }
 

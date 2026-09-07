@@ -12,6 +12,7 @@ import com.vyg.repository.VygSchoolRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,6 +69,7 @@ public class LearnerServiceImpl implements LearnerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SchoolWithLearnersDTO> getAllSchoolsWithLearners() {
         List<SchoolWithLearnersDTO> result = new ArrayList<>();
 
@@ -94,6 +96,7 @@ public class LearnerServiceImpl implements LearnerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<SchoolWithLearnersDTO> getSchoolsWithLearnersByAddress(Long addressId) {
         List<SchoolWithLearnersDTO> result = new ArrayList<>();
 
@@ -118,6 +121,7 @@ public class LearnerServiceImpl implements LearnerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public SchoolWithLearnersDTO getSchoolWithLearners(String schoolId) {
         VygSchool school = vygSchoolRepository.findById(schoolId)
                 .orElseThrow(() -> new IllegalArgumentException("School not found with id: " + schoolId));
