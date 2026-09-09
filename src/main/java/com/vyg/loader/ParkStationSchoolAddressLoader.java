@@ -18,7 +18,7 @@ import java.util.List;
 @Component
 @Order(3)
 @RequiredArgsConstructor
-public class VygSchoolAddressLoader implements CommandLineRunner {
+public class ParkStationSchoolAddressLoader implements CommandLineRunner {
 
     private final VygSchoolRepository vygSchoolRepository;
     private final AddressRepository addressRepository;

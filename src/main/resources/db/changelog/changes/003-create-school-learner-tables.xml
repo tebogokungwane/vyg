@@ -67,7 +67,7 @@
             <sqlCheck expectedResult="0">SELECT COUNT(*) FROM vyg_school</sqlCheck>
         </preConditions>
         <loadData tableName="vyg_school"
-                  file="db/changelog/data/vyg_school_data.csv"
+                  file="db/changelog/data/park_station_school_data.csv"
                   separator=","
                   encoding="UTF-8"/>
     </changeSet>
@@ -78,7 +78,7 @@
             <sqlCheck expectedResult="0">SELECT COUNT(*) FROM vyg_learner</sqlCheck>
         </preConditions>
         <loadData tableName="vyg_learner"
-                  file="db/changelog/data/vyg_learner_data.csv"
+                  file="db/changelog/data/park_station_learner_data.csv"
                   separator=","
                   encoding="UTF-8"/>
     </changeSet>

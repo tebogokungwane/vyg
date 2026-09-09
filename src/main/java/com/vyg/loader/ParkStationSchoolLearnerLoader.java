@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 @Order(2)
 @RequiredArgsConstructor
-public class VygSchoolLearnerLoader implements CommandLineRunner {
+public class ParkStationSchoolLearnerLoader implements CommandLineRunner {
 
     private final VygSchoolRepository vygSchoolRepository;
     private final VygLearnerRepository vygLearnerRepository;
@@ -37,7 +37,7 @@ public class VygSchoolLearnerLoader implements CommandLineRunner {
         }
 
         try {
-            ClassPathResource resource = new ClassPathResource("db/changelog/data/vyg_school_data.csv");
+            ClassPathResource resource = new ClassPathResource("db/changelog/data/park_station_school_data.csv");
             BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
 
             String header = reader.readLine(); // skip header
@@ -81,7 +81,7 @@ public class VygSchoolLearnerLoader implements CommandLineRunner {
         }
 
         try {
-            ClassPathResource resource = new ClassPathResource("db/changelog/data/vyg_learner_data.csv");
+            ClassPathResource resource = new ClassPathResource("db/changelog/data/park_station_learner_data.csv");
             BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
 
             String header = reader.readLine(); // skip header

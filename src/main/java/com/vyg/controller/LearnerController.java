@@ -54,16 +54,20 @@ public class LearnerController {
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
             if (email != null && !email.equals("anonymousUser")) {
                 Members member = memberRepository.findByEmail(email).orElse(null);
+                // Authenticated user WITH an address: scope strictly to their own
+                // branch/address. Schools are branch-specific (e.g. the seeded
+                // schools belong to Park Station), so a user from another branch
+                // must NOT see them — return only their address's schools, even
+                // if that list is empty.
                 if (member != null && member.getAddress() != null) {
-                    List<SchoolWithLearnersDTO> result = learnerService.getSchoolsWithLearnersByAddress(member.getAddress().getId());
-                    if (!result.isEmpty()) {
-                        return ResponseEntity.ok(result);
-                    }
+                    List<SchoolWithLearnersDTO> result =
+                            learnerService.getSchoolsWithLearnersByAddress(member.getAddress().getId());
+                    return ResponseEntity.ok(result);
                 }
             }
         } catch (Exception ignored) {
         }
-        // Fallback: return all schools
+        // Fallback (unauthenticated / no address on the account): return all schools.
         return ResponseEntity.ok(learnerService.getAllSchoolsWithLearners());
     }
 
